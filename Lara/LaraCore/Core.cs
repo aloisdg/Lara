@@ -17,13 +17,15 @@ namespace Lara
             Words = new Dictionary<string, uint>();
         }
 
-        public void GetAllText(string folderPath, string format, SearchOption so)
+        public void GetAllText(string folderPath, string format, SearchOption so, bool isVerbose)
         {
             if (folderPath == null) throw new ArgumentNullException("path");
             foreach (string file in Directory.EnumerateFiles(folderPath,
                 String.IsNullOrWhiteSpace(format) ? "*" : String.Format("*.{0}", format),
                 so))
             {
+                if (isVerbose)
+                    Console.WriteLine(Path.GetDirectoryName(file) + "\t" + Path.GetFileName(file));
                 string[] wordtab = SplitWords(File.ReadAllText(file));
                 foreach (var item in wordtab)
                 {
@@ -35,6 +37,7 @@ namespace Lara
             }
             Words = Words.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
         }
+
 
         /*
         private void Grow(int i)
