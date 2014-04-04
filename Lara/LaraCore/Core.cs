@@ -11,35 +11,45 @@ namespace Lara
     public class Core
     {
         public Dictionary<string, uint> Words;
-     
+
         public Core()
         {
             Words = new Dictionary<string, uint>();
         }
 
-        public void GetAllText(string folderPath, string format, bool isRecursive)
+        public void GetAllText(string folderPath, string format, SearchOption so)
         {
+            if (folderPath == null) throw new ArgumentNullException("path");
             foreach (string file in Directory.EnumerateFiles(folderPath,
                 String.IsNullOrWhiteSpace(format) ? "*" : String.Format("*.{0}", format),
-                isRecursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly))
+                so))
             {
                 string[] wordtab = SplitWords(File.ReadAllText(file));
                 foreach (var item in wordtab)
                 {
                     if (Words.ContainsKey(item))
-                    {
                         Words[item]++;
-                    }
                     else
-                    {
                         Words.Add(item, 1);
-                    }
                 }
             }
-            var ordered = Words.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
-            Words = ordered;
+            Words = Words.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
         }
 
+        /*
+        private void Grow(int i)
+        {
+            if (i < 1)
+                return;
+            var current = Words.ElementAt(i);
+            var next = Words.ElementAt(i - 1);
+            if (current.Value <= next.Value)
+                return;
+            KeyValuePair<string, uint> tmp = current;
+            current = next;
+            next = tmp;
+            Grow(i - 1);
+        }*/
 
         private string[] SplitWords(string s)
         {
