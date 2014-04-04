@@ -25,7 +25,7 @@ namespace Lara
                 so))
             {
                 if (isVerbose)
-                    Console.WriteLine(Path.GetDirectoryName(file) + "\t" + Path.GetFileName(file));
+                    Console.WriteLine(Path.GetFileName(file));
                 string[] wordtab = SplitWords(File.ReadAllText(file));
                 foreach (var item in wordtab)
                 {
@@ -38,22 +38,6 @@ namespace Lara
             Words = Words.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
         }
 
-
-        /*
-        private void Grow(int i)
-        {
-            if (i < 1)
-                return;
-            var current = Words.ElementAt(i);
-            var next = Words.ElementAt(i - 1);
-            if (current.Value <= next.Value)
-                return;
-            KeyValuePair<string, uint> tmp = current;
-            current = next;
-            next = tmp;
-            Grow(i - 1);
-        }*/
-
         private string[] SplitWords(string s)
         {
             //
@@ -63,6 +47,12 @@ namespace Lara
             return Regex.Split(s, @"\W+");
             // @      special verbatim string syntax
             // \W+    one or more non-word characters together
+        }
+
+        public decimal GetWordsTotal()
+        {
+            decimal total = Words.Sum(x => x.Value);
+            return total;
         }
     }
 }
